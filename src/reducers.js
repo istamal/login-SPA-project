@@ -18,6 +18,9 @@ const userName = (state = '', action) => {
   if (action.type === 'ADD_USERNAME') {
     return action.payload.name;
   }
+  if (action.type === 'REMOVE_USERNAME') {
+    return '';
+  }
   return state;
 };
 

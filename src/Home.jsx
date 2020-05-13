@@ -1,6 +1,5 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import * as actions from './actions';
 
@@ -61,6 +60,7 @@ const Button = styled.button`
 `;
 
 const actionCreators = {
+  removeUserName: actions.removeUserName,
   auth: actions.auth,
 };
 
@@ -82,7 +82,11 @@ const Home = (props) => (
           {props.userName}
           !
         </Title>
-        <Button onClick={() => props.auth()}>
+        <Button onClick={() => {
+          props.removeUserName();
+          props.auth();
+        }}
+        >
           Выход
         </Button>
       </Container>

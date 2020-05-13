@@ -1,27 +1,29 @@
 import React from 'react';
 import { useFormik } from 'formik';
-import axios from 'axios';
 import { Link } from 'react-router-dom';
 import { Input, Button } from 'antd';
+import { connect } from 'react-redux';
+import * as actions from './actions';
 
-const Signup = () => {
+const actionCreators = {
+  addUser: actions.addUser,
+};
+
+const mapStateToProps = (state) => ({
+  isAuth: state.isAuth,
+  errorMsg: state.errorMsg,
+});
+
+const Signup = (props) => {
   const formik = useFormik({
     initialValues: {
       username: '',
       email: '',
       password: '',
     },
-    onSubmit: (values, { setErrors }) => {
-      console.log({ user: values });
-      axios.post('https://conduit.productionready.io/api/users', { user: values })
-        .then((response) => {
-          console.log(response);
-          // Установить в стейт имя пользователя и Перейти на главную страницу
-        })
-        .catch((error) => {
-          console.log(error.response.data);
-          setErrors(error.response.data.errors);
-        });
+    onSubmit: (values) => {
+      props.addUser(values, 'https://conduit.productionready.io/api/users');
+      props.history.replace('/');
     },
   });
 
@@ -77,4 +79,4 @@ const Signup = () => {
   );
 };
 
-export default Signup;
+export default connect(mapStateToProps, actionCreators)(Signup);

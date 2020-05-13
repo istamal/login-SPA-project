@@ -24,8 +24,9 @@ const Login = (props) => {
       remember: false,
     },
     onSubmit: (values) => {
-      props.addUser(values);
-      setTimeout(() => props.history.replace('/'), 1000);
+      props.addUser(values, 'https://conduit.productionready.io/api/users/login');
+      props.auth();
+      props.history.replace('/');
     },
   });
 

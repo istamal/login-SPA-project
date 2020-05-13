@@ -3,7 +3,6 @@ import {
   BrowserRouter as Router,
   Route,
   Redirect,
-  Switch,
 } from 'react-router-dom';
 import { connect } from 'react-redux';
 import Login from './Login';
@@ -17,7 +16,7 @@ const mapStateToProps = (state) => ({
 function App(props) {
   console.log(props);
   return (
-    <Router>
+    <Router basename="/login-SPA">
       <PrivateRoute store={props.isAuth} exact path="/" component={Home} />
       <Route path="/login" component={Login} />
       <Route path="/signup" component={Signup} />

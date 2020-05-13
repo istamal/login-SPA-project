@@ -8,6 +8,10 @@ export const addErrorMsg = () => ({
   type: 'ADD_MESSAGE',
 });
 
+export const removeUserName = () => ({
+  type: 'REMOVE_USERNAME',
+});
+
 export const addUserName = (username) => ({
   type: 'ADD_USERNAME',
   payload: {
@@ -15,14 +19,11 @@ export const addUserName = (username) => ({
   },
 });
 
-export const addUser = (values) => async (dispatch) => {
+export const addUser = (values, path) => async (dispatch) => {
   try {
-    const response = await axios.post('https://conduit.productionready.io/api/users/login', { user: values });
-    console.log(response);
+    const response = await axios.post(path, { user: values });
     dispatch(addUserName(response.data.user.username));
-    dispatch(auth());
   } catch (error) {
-    console.log(error.response.data);
     dispatch(addErrorMsg());
   }
 };
