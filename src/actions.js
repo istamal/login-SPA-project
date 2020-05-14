@@ -19,10 +19,11 @@ export const addUserName = (username) => ({
   },
 });
 
-export const addUser = (values, path) => async (dispatch) => {
+export const addUser = (values) => async (dispatch) => {
   try {
-    const response = await axios.post(path, { user: values });
+    const response = await axios.post('https://conduit.productionready.io/api/users/login', { user: values });
     dispatch(addUserName(response.data.user.username));
+    dispatch(auth());
   } catch (error) {
     dispatch(addErrorMsg());
   }

@@ -3,6 +3,7 @@ import { useFormik } from 'formik';
 import { Link } from 'react-router-dom';
 import { Input, Button } from 'antd';
 import { connect } from 'react-redux';
+import axios from 'axios';
 import * as actions from './actions';
 
 const actionCreators = {
@@ -21,9 +22,17 @@ const Signup = (props) => {
       email: '',
       password: '',
     },
-    onSubmit: (values) => {
-      props.addUser(values, 'https://conduit.productionready.io/api/users');
-      props.history.replace('/');
+    onSubmit: async (values, { setErrors }) => {
+      try {
+        await axios.post('https://conduit.productionready.io/api/users', { user: values });
+        props.history.replace('/login');
+      } catch (error) {
+        setErrors({
+          email: error.response.data.errors.email,
+          password: error.response.data.errors.password,
+          username: error.response.data.errors.username,
+        });
+      }
     },
   });
 
