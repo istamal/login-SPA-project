@@ -7,9 +7,30 @@ const isAuth = (state = false, action) => {
   return state;
 };
 
+const requestStatus = (state = 'none', action) => {
+  if (action.type === 'REQUEST_SUCCESS') {
+    return 'success';
+  }
+  if (action.type === 'REQUEST_SENDING') {
+    return 'requested';
+  }
+  if (action.type === 'REQUEST_FAILURE') {
+    return 'failure';
+  }
+  if (action.type === 'NONE') {
+    return 'none';
+  }
+  return state;
+};
+
 const errorMsg = (state = null, action) => {
   if (action.type === 'ADD_MESSAGE') {
-    return 'Неверный email или пароль';
+    return {
+      email: action.payload.email,
+      username: action.payload.username,
+      password: action.payload.password,
+      emailOrPassword: 'Email or password is invalid',
+    };
   }
   return state;
 };
@@ -28,4 +49,5 @@ export default combineReducers({
   isAuth,
   userName,
   errorMsg,
+  requestStatus,
 });

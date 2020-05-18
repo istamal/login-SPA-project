@@ -8,31 +8,26 @@ import { connect } from 'react-redux';
 import Login from './Login';
 import Home from './Home';
 import Signup from './Singup';
+import PrivateRoute from './PrivateRoute';
 
 const mapStateToProps = (state) => ({
-  isAuth: state.isAuth,
+  requestStatus: state.requestStatus,
 });
 
 function App(props) {
-  console.log(props);
   return (
     <Router basename="/login-SPA">
-      <PrivateRoute store={props.isAuth} exact path="/" component={Home} />
+      <PrivateRoute exact path="/" component={Home} />
       <Route path="/login" component={Login} />
-      <Route path="/signup" component={Signup} />
+      <Route
+        path="/signup"
+        render={
+          () => (props.requestStatus === 'success'
+            ? <Redirect to="/login" />
+            : <Signup />)
+        }
+      />
     </Router>
   );
 }
-
-const PrivateRoute = ({ component: Component, store, ...rest }) => (
-  <Route
-    {...rest}
-    render={(props) => (store ? (
-      <Component {...props} />
-    ) : (
-      <Redirect to="/login" />
-    ))}
-  />
-);
-
 export default connect(mapStateToProps)(App);

@@ -1,18 +1,18 @@
 import React from 'react';
 import { useFormik } from 'formik';
 import { Link } from 'react-router-dom';
-import { Input, Button } from 'antd';
+import { Input, Button, Spin } from 'antd';
 import { connect } from 'react-redux';
-import axios from 'axios';
 import * as actions from './actions';
 
 const actionCreators = {
   addUser: actions.addUser,
+  noneRequest: actions.noneRequest,
 };
 
 const mapStateToProps = (state) => ({
-  isAuth: state.isAuth,
   errorMsg: state.errorMsg,
+  requestStatus: state.requestStatus,
 });
 
 const Signup = (props) => {
@@ -22,28 +22,19 @@ const Signup = (props) => {
       email: '',
       password: '',
     },
-    onSubmit: async (values, { setErrors }) => {
-      try {
-        await axios.post('https://conduit.productionready.io/api/users', { user: values });
-        props.history.replace('/login');
-      } catch (error) {
-        setErrors({
-          email: error.response.data.errors.email,
-          password: error.response.data.errors.password,
-          username: error.response.data.errors.username,
-        });
-      }
+    onSubmit: (values) => {
+      props.addUser(values, 'https://conduit.productionready.io/api/users')
+        .then(() => props.noneRequest());
     },
   });
 
   const {
     values,
-    errors,
     handleChange,
     handleSubmit,
   } = formik;
 
-  return (
+  const renderForm = () => (
     <form
       className="form"
       onSubmit={handleSubmit}
@@ -57,7 +48,7 @@ const Signup = (props) => {
           value={values.email}
           onChange={handleChange}
         />
-        {errors.email && (<div className="error">{errors.email}</div>)}
+        {props.errorMsg && (<div className="error">{props.errorMsg.email}</div>)}
       </div>
       <div className="margin-bottom">
         <Input.Password
@@ -68,7 +59,7 @@ const Signup = (props) => {
           value={values.password}
           onChange={handleChange}
         />
-        {errors.password && (<div className="error">{errors.password}</div>)}
+        {props.errorMsg && (<div className="error">{props.errorMsg.password}</div>)}
       </div>
       <div className="margin-bottom">
         <Input
@@ -78,14 +69,17 @@ const Signup = (props) => {
           value={values.username}
           onChange={handleChange}
         />
-        {errors.username && (<div className="error">{errors.username}</div>)}
+        {props.errorMsg && (<div className="error">{props.errorMsg.username}</div>)}
       </div>
       <Button className="left-margin" type="primary" htmlType="submit">
         Register
       </Button>
+      {props.requestStatus === 'requested' && (<Spin className="left-margin" />)}
       <Link to="/login">Войти</Link>
     </form>
   );
+
+  return renderForm();
 };
 
 export default connect(mapStateToProps, actionCreators)(Signup);

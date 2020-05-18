@@ -61,7 +61,7 @@ const Button = styled.button`
 
 const actionCreators = {
   removeUserName: actions.removeUserName,
-  auth: actions.auth,
+  noneRequest: actions.noneRequest,
 };
 
 const mapStateToProps = (state) => ({
@@ -83,8 +83,8 @@ const Home = (props) => (
           !
         </Title>
         <Button onClick={() => {
+          props.noneRequest();
           props.removeUserName();
-          props.auth();
         }}
         >
           Выход

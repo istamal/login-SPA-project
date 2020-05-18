@@ -1,5 +1,5 @@
 import React from 'react';
-import { Input, Button } from 'antd';
+import { Input, Button, Spin } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import { Link, withRouter } from 'react-router-dom';
 import { useFormik } from 'formik';
@@ -8,12 +8,14 @@ import * as actions from './actions';
 
 const actionCreators = {
   auth: actions.auth,
+  noneRequest: actions.noneRequest,
   addUser: actions.addUser,
 };
 
 const mapStateToProps = (state) => ({
   isAuth: state.isAuth,
   errorMsg: state.errorMsg,
+  requestStatus: state.requestStatus,
 });
 
 const Login = (props) => {
@@ -24,10 +26,12 @@ const Login = (props) => {
       remember: false,
     },
     onSubmit: (values) => {
-      props.addUser(values)
+      props.addUser(values, 'https://conduit.productionready.io/api/users/login')
         .then(() => props.history.replace('/'));
     },
   });
+
+  const { errorMsg } = props;
 
   return (
     <form
@@ -52,13 +56,13 @@ const Login = (props) => {
           value={formik.values.password}
           onChange={formik.handleChange}
         />
-        {props.errorMsg && (<div className="error">{props.errorMsg}</div>)}
+        {errorMsg && (<div className="error">{errorMsg.emailOrPassword}</div>)}
       </div>
       <Button type="primary" htmlType="submit" className="left-margin">
         Войти
       </Button>
+      {props.requestStatus === 'requested' && (<Spin className="left-margin" />)}
       <Link to="/signup" className="left-margin">Регистрация!</Link>
-      {formik.errors.loginError && <div>email or password is invalid</div>}
     </form>
   );
 };
